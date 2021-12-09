@@ -41,13 +41,34 @@ def estadisticaV():
     #tot=Label(ventanaE,text = 'total')
     #tot.place(x=350,y=550)
     baseE=pd.ExcelFile('bitacora.xlsx')
-    dfEsClient=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A')
+    dfEsClient=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A,B')
+    dfMcli=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A')
+    dfprod=pd.read_excel(baseE,'Sheet',index_col=False,usecols='c:z')
+    #print(dfprod)
+    #dfprod.value_counts()
+    #df3 = pd.DataFrame(dfprod)
+    #df3.value_counts().plot(kind='bar')
     
-    print(dfEsClient)
-    dfEsClient['CLIENTE'].value_counts().plot(kind='bar')
+    MejCli=dfEsClient['CLIENTE'].value_counts()#.plot(kind='bar')
+    df2=pd.DataFrame(data=MejCli)
+    #pic2=df2.plot.line()
+    pic2=df2.plot(kind='bar',figsize=(10,25),grid=True)
+    pic2=pic2.get_figure()
+    pic2.savefig('cotizaciones por cliente.jpg')
+    #MejCli.savefig("ClienteQueMasCotiza.jpg")
     #Resu=dfEsClient['CLIENTE'].value_counts()
     #print(Resu)
-
+        
+    #print(dfEsClient['CLIENTE'].value_counts())
+    #dfEsClient['CLIENTE'].value_counts()
+    #dfEsClient.plot.line(x='CLIENTE', y='TOTAL')
+    
+    df=pd.DataFrame(data=dfEsClient)
+    pic=df.plot.line(title='Presupuesto de clientes',x='CLIENTE',figsize=(30,6));
+    #pic=df.plot(kind='bar',x='CLIENTES')
+    pic=pic.get_figure()
+    pic.savefig('Presupuesto de clientes.jpg')
+    
 def ventaCotiza():
     ventana5=Tk()
     
