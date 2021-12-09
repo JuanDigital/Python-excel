@@ -2,11 +2,20 @@
 """
 cotiza
 """
-
+import string
+import openpyxl
 import pandas as pd
 import tkinter 
 from tkinter import* 
 from tkinter.ttk import*
+import matplotlib.pyplot as plt
+'''leer un libro xlsx'''
+
+from openpyxl import load_workbook
+book=load_workbook('bitacora.xlsx')
+sheet=book.active
+#wb = Workbook()
+#ws = wb.active
 
 
 
@@ -16,34 +25,57 @@ titulos=['Biomedica S.A.C,COTIZACIÓN,6° Av. 91',
 
 cotiza=[]
 ncotiza=[]
-ccotiza=['CLIENTE:']
+ccotiza=['CLIENTE: ']
 pcotiza=[]
+bitacora=[]
+#guia=''
+
+def listAlphabet():
+    return list(string.ascii_lowercase)
+letras=(listAlphabet())
+def estadisticaV():
+    ventanaE=Tk()
+    
+    ventanaE.title('Elegir estadistica')
+    ventanaE.geometry('800x800')
+    #tot=Label(ventanaE,text = 'total')
+    #tot.place(x=350,y=550)
+    baseE=pd.ExcelFile('bitacora.xlsx')
+    dfEsClient=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A')
+    
+    print(dfEsClient)
+    dfEsClient['CLIENTE'].value_counts().plot(kind='bar')
+    #Resu=dfEsClient['CLIENTE'].value_counts()
+    #print(Resu)
 
 def ventaCotiza():
     ventana5=Tk()
     
     ventana5.title('cotización')
     ventana5.geometry('800x800')
-    ''' accion4=Label(ventana4,text = cotiza)
-    accion4.pack()'''
+    tot=Label(ventana5,text = 'total')
+    tot.place(x=350,y=550)
     
     
     
     ''' crear cuadro de lista '''
     lista_elementos=Listbox(ventana5,width=50,height=3) 
-    nombresB=Listbox(ventana5,width=50,height=2) 
+    nombresB=Listbox(ventana5,width=100,height=2) 
     produc=Listbox(ventana5,width=50,height=20) 
     pres=Listbox(ventana5,width=50,height=20) 
-    
+    total=Listbox(ventana5,width=50,height=2) 
     ''' ubicacion de la lista'''
     lista_elementos.place(x=100,y=100)
     nombresB.place(x=100, y=150)
     produc.place(x=100, y=200)
     pres.place(x=400, y=200)
+    total.place(x=400,y=550)
    
     
     '''insertando elementos '''
-    def mostr():        
+    def mostr():
+        k=-1
+        d=0        
         for a in titulos:
             #print (a,len(a))
             #imprime=(a)
@@ -56,8 +88,48 @@ def ventaCotiza():
             
         for c in pcotiza:
             pres.insert(END, c)
-            
+            d+=int(c)
+        bitacora.insert(1,c)    
+        total.insert(END, d)
         
+        '''donde escribir'''
+            
+        conta=open('i.txt','rt')
+        i=conta.readline()
+        #print(i)
+        #print (type(i))# i=0, type= str
+        j=int(i)+1
+        #print (j)
+       
+      
+        dor=open('i.txt','w')
+        dor.write(str(j))
+        dor.close()
+        
+        '''guardar datos en bitacora'''
+    
+       
+       
+        for ind in bitacora:
+           k+=1
+           guia=letras[k]+str(j)
+           sheet[guia]=ind
+        
+        book.save('bitacora.xlsx')
+        
+        '''
+     
+        for abc in letras:
+            k+=1
+            guia=abc+(j)
+            ws[guia]=str(bitacora[k])
+       
+        '''
+        
+        
+        '''guardar libro'''
+       # wb.save('bitacora.xlsx')
+      
         
             
             
@@ -98,6 +170,7 @@ def ventaEquipo():
         lse=list(selectEquipo['EQUIPO'])
         nEq=str(lse[0])
         ncotiza.append(nEq)
+        bitacora.append(nEq)
         
         lsep=list(selectEquipo['PRECIO'])
         nEqp=str(lsep[0])
@@ -145,6 +218,7 @@ def ventaMobi():
         lsm=list(selectMob['MOBILIARIO'])
         nMobi=str(lsm[0])
         ncotiza.append(nMobi)
+        bitacora.append(nMobi)
         
         lsmp=list(selectMob['PRECIO'])
         nMobiP=str(lsmp[0])
@@ -199,10 +273,12 @@ def NewVentana():
         lsc=list(selectCliente['CLIENTE'])
         nCliente=str(lsc[0])
         ccotiza.append(nCliente)
+        bitacora.insert(0, nCliente)
         #print(nCliente)  
         ccotiza.append('Tel.:')
         lscT=list(selectCliente['TELÉFONO'])
         ntCliente=str(lscT[0])
+        
         #print(nCliente)
         ccotiza.append(ntCliente)
        # print(cotiza)
@@ -245,21 +321,27 @@ def inicio():
     secreto.pack()
     
     def SigVent():
-        if usuario.get()=="" and secret.get()=='':
+        if usuario.get()=='' and secret.get()=='':
             NewVentana()
             ventana.destroy()
             
         else:
             ventana.title('incorrecto')
         
-        
+    def Ventestad():
+         if usuario.get()=='' and secret.get()=='':
+             estadisticaV()
+             
+         else:
+             ventana.title('ingresa con usuario y contraseña')
     
     
     boton1= Button(ventana, text='ACCESO',command=SigVent)
     boton1.pack(side= BOTTOM)
+    estadistica=Button(ventana, text='Estadisticas',command=Ventestad).place(x=520,y=270)
 
     ventana.mainloop()
-ventaCotiza()
+#                       ventaCotiza()
 inicio()
 
   
