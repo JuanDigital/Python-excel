@@ -28,6 +28,7 @@ ncotiza=[]
 ccotiza=['CLIENTE: ']
 pcotiza=[]
 bitacora=[]
+listaprod=[]
 #guia=''
 
 def listAlphabet():
@@ -37,37 +38,53 @@ def estadisticaV():
     ventanaE=Tk()
     
     ventanaE.title('Elegir estadistica')
-    ventanaE.geometry('800x800')
+    accionE=Label(ventanaE,text = 'Las graficas se guardan en\n la carpeta contenedora\n de este programa')
+    accionE.pack()
+    ventanaE.geometry('300x200')
     #tot=Label(ventanaE,text = 'total')
     #tot.place(x=350,y=550)
     baseE=pd.ExcelFile('bitacora.xlsx')
     dfEsClient=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A,B')
     dfMcli=pd.read_excel(baseE,'Sheet',index_col=False,usecols='A')
-    dfprod=pd.read_excel(baseE,'Sheet',index_col=False,usecols='c:z')
-    #print(dfprod)
-    #dfprod.value_counts()
-    #df3 = pd.DataFrame(dfprod)
-    #df3.value_counts().plot(kind='bar')
+    '''dfprod=pd.read_excel(baseE,'Sheet',index_col=False,usecols='c:z')
+    listaprod.append(list(dfprod['PRODUCTO1']))
+    listaprod.append(list(dfprod['PRODUCTO2']))
+    df3=pd.DataFrame(listaprod)
+    df3.value_counts().plot(kind='bar')
+    print(df3.value_counts())
+    #df3 = pd.DataFrame({'productos':dfprod})
+    #print(df3)
+    #df3.value_counts().plot(kind='bar')'''
+    def cotpc():
     
-    MejCli=dfEsClient['CLIENTE'].value_counts()#.plot(kind='bar')
-    df2=pd.DataFrame(data=MejCli)
-    #pic2=df2.plot.line()
-    pic2=df2.plot(kind='bar',figsize=(10,25),grid=True)
-    pic2=pic2.get_figure()
-    pic2.savefig('cotizaciones por cliente.jpg')
-    #MejCli.savefig("ClienteQueMasCotiza.jpg")
-    #Resu=dfEsClient['CLIENTE'].value_counts()
-    #print(Resu)
+        MejCli=dfEsClient['CLIENTE'].value_counts()#.plot(kind='bar')
+        df2=pd.DataFrame(data=MejCli)
+        #pic2=df2.plot.line()
+        pic2=df2.plot(kind='bar',figsize=(10,25),grid=True)
+        pic2=pic2.get_figure()
+        pic2.savefig('cotizaciones por cliente.jpg')
+        #MejCli.savefig("ClienteQueMasCotiza.jpg")
+        #Resu=dfEsClient['CLIENTE'].value_counts()
+        #print(Resu)
         
     #print(dfEsClient['CLIENTE'].value_counts())
     #dfEsClient['CLIENTE'].value_counts()
     #dfEsClient.plot.line(x='CLIENTE', y='TOTAL')
+    def prepc():
+        df=pd.DataFrame(data=dfEsClient)
+        pic=df.plot.line(title='Presupuesto de clientes',x='CLIENTE',figsize=(30,6));
+        #pic=df.plot(kind='bar',x='CLIENTES')
+        pic=pic.get_figure()
+        pic.savefig('Presupuesto de clientes.jpg')
     
-    df=pd.DataFrame(data=dfEsClient)
-    pic=df.plot.line(title='Presupuesto de clientes',x='CLIENTE',figsize=(30,6));
-    #pic=df.plot(kind='bar',x='CLIENTES')
-    pic=pic.get_figure()
-    pic.savefig('Presupuesto de clientes.jpg')
+    botonvE= Button(ventanaE, text='cotizaciones por cliente',command=cotpc)
+    botonvE.pack()
+    
+    botonvE= Button(ventanaE, text='Presupuesto de clientes',command=prepc)
+    botonvE.pack()
+    
+    accionEn=Label(ventanaE,text = 'cierra esta ventana para generar las graficas')
+    accionEn.pack()
     
 def ventaCotiza():
     ventana5=Tk()
@@ -342,7 +359,7 @@ def inicio():
     secreto.pack()
     
     def SigVent():
-        if usuario.get()=='' and secret.get()=='':
+        if usuario.get()=='admin' and secret.get()=='admin':
             NewVentana()
             ventana.destroy()
             
@@ -350,8 +367,9 @@ def inicio():
             ventana.title('incorrecto')
         
     def Ventestad():
-         if usuario.get()=='' and secret.get()=='':
+         if usuario.get()=='admin' and secret.get()=='bios':
              estadisticaV()
+             ventana.destroy()
              
          else:
              ventana.title('ingresa con usuario y contraseña')
